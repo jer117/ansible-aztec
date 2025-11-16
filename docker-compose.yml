@@ -1,0 +1,31 @@
+name: aztec-node
+services:
+  node:
+    image: aztecprotocol/aztec:2.1.4
+    environment:
+      KEY_STORE_DIRECTORY: /var/lib/keystore
+      DATA_DIRECTORY: /var/lib/data
+      LOG_LEVEL: $LOG_LEVEL
+      ETHEREUM_HOSTS: $ETHEREUM_HOSTS
+      L1_CONSENSUS_HOST_URLS: $L1_CONSENSUS_HOST_URLS
+      P2P_IP: $P2P_IP
+      P2P_PORT: $P2P_PORT
+      AZTEC_PORT: $AZTEC_PORT
+      AZTEC_ADMIN_PORT: $AZTEC_ADMIN_PORT
+    entrypoint: >
+      sh -c 'node --no-warnings /usr/src/yarn-project/aztec/dest/bin/index.js start --network alpha-testnet --node --archiver --sequencer'
+    ports:
+      - $AZTEC_PORT:$AZTEC_PORT
+      - $AZTEC_ADMIN_PORT:$AZTEC_ADMIN_PORT
+      - $P2P_PORT:$P2P_PORT/tcp
+      - $P2P_PORT:$P2P_PORT/udp
+    volumes:
+      - $DATA_DIRECTORY:/var/lib/data
+      - $KEY_STORE_DIRECTORY:/var/lib/keystore
+    restart: always
+    networks:
+      - dncore_network   # Attach to your existing network
+
+networks:
+  dncore_network:
+    external: true       # Reuse the pre-existing network created by DAppNode
