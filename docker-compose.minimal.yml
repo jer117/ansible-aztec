@@ -1,0 +1,44 @@
+name: aztec-node-minimal
+
+services:
+  node:
+    image: aztecprotocol/aztec:2.1.4-arm64
+    environment:
+      KEY_STORE_DIRECTORY: /var/lib/keystore
+      DATA_DIRECTORY: /var/lib/data
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      ETHEREUM_HOSTS: ${ETHEREUM_HOSTS}
+      L1_CONSENSUS_HOST_URLS: ${L1_CONSENSUS_HOST_URLS}
+      P2P_IP: ${P2P_IP}
+      P2P_PORT: ${P2P_PORT}
+      AZTEC_PORT: ${AZTEC_PORT}
+      AZTEC_ADMIN_PORT: ${AZTEC_ADMIN_PORT}
+    entrypoint: >
+      sh -c 'node --no-warnings /usr/src/yarn-project/aztec/dest/bin/index.js start --node --archiver --sequencer --network alpha-testnet --data-store-map-size-kb=2262144'
+    ports:
+      - ${AZTEC_PORT}:${AZTEC_PORT}
+      - ${AZTEC_ADMIN_PORT}:${AZTEC_ADMIN_PORT}
+      - ${P2P_PORT}:${P2P_PORT}/tcp
+      - ${P2P_PORT}:${P2P_PORT}/udp
+    volumes:
+      - ${DATA_DIRECTORY}:/var/lib/data
+      - ${KEY_STORE_DIRECTORY}:/var/lib/keystore
+    restart: always
+    deploy:
+      resources:
+        limits:
+          # LMDB memory-mapped files require virtual address space reservation
+          # Even though not all physical RAM is used immediately, Docker's memory limit
+          # affects virtual memory allocation. With 5 maps × 10GB default = 50GB total,
+          # we need sufficient memory limit to allow the OS to reserve address space.
+          # If env vars work (256MB × 5 = 1.25GB), 2-3GB would suffice.
+          # With defaults (10GB × 5 = 50GB), may need 16-20GB+ to allow address space reservation
+          memory: 16G
+        reservations:
+          memory: 4G
+    networks:
+      - eth-docker_default
+
+networks:
+  eth-docker_default:
+    external: true
