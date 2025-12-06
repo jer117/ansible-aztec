@@ -2,7 +2,7 @@ name: aztec-node-minimal
 
 services:
   node:
-    image: aztecprotocol/aztec:2.1.7-arm64
+    image: aztecprotocol/aztec:2.1.8-arm64
     environment:
       KEY_STORE_DIRECTORY: /var/lib/keystore
       DATA_DIRECTORY: /var/lib/data
@@ -38,6 +38,32 @@ services:
           memory: 4G
     networks:
       - eth-docker_default
+
+  aztec-collector:
+    image: jer117/aztec-collector:sha-46f8aa3
+    restart: unless-stopped
+    ports:
+      - "13285:13285"
+    environment:
+      - AZTEC_COLLECTOR_PROTOCOL_RPC_URL=http://node:$AZTEC_PORT
+      - AZTEC_COLLECTOR_PROTOCOL_ADMIN_URL=http://node:$AZTEC_ADMIN_PORT
+      - AZTEC_COLLECTOR_INTERVAL=30s
+      - AZTEC_COLLECTOR_API_ENABLED=true
+      - AZTEC_COLLECTOR_API_LISTEN=0.0.0.0:13285
+      - AZTEC_COLLECTOR_JSONLOG_PATH=/data/aztec-collector.json
+    volumes:
+      - ${CONFIG_FILE}:/app/config.yaml:ro
+      - ${COLLECTOR_DATA_DIRECTORY}:/data
+    depends_on:
+      - node
+    networks:
+      - eth-docker_default
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:13285/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s   # Reuse the pre-e
 
 networks:
   eth-docker_default:
