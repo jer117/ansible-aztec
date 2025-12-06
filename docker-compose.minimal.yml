@@ -14,7 +14,7 @@ services:
       AZTEC_PORT: ${AZTEC_PORT}
       AZTEC_ADMIN_PORT: ${AZTEC_ADMIN_PORT}
     entrypoint: >
-      sh -c 'node --no-warnings /usr/src/yarn-project/aztec/dest/bin/index.js start --node --archiver --sequencer --network alpha-testnet --data-store-map-size-kb=2262144'
+      sh -c 'node --no-warnings /usr/src/yarn-project/aztec/dest/bin/index.js start --node --archiver --sequencer --network $NETWORK --data-store-map-size-kb=2262144'
     ports:
       - ${AZTEC_PORT}:${AZTEC_PORT}
       - ${AZTEC_ADMIN_PORT}:${AZTEC_ADMIN_PORT}
@@ -37,7 +37,7 @@ services:
         reservations:
           memory: 4G
     networks:
-      - eth-docker_default
+      - $DOCKER-NETWORK
 
   aztec-collector:
     image: jer117/aztec-collector:sha-5930307
@@ -57,7 +57,7 @@ services:
     depends_on:
       - node
     networks:
-      - eth-docker_default
+      - $DOCKER-NETWORK
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:13285/health"]
       interval: 30s
@@ -66,5 +66,5 @@ services:
       start_period: 10s   # Reuse the pre-e
 
 networks:
-  eth-docker_default:
+  $DOCKER-NETWORK:
     external: true
