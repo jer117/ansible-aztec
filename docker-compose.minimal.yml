@@ -40,7 +40,7 @@ services:
       - eth-docker_default
 
   aztec-collector:
-    image: jer117/aztec-collector:sha-46f8aa3
+    image: jer117/aztec-collector:sha-5930307
     restart: unless-stopped
     ports:
       - "13285:13285"
