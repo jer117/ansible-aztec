@@ -13,7 +13,7 @@ services:
       AZTEC_PORT: $AZTEC_PORT
       AZTEC_ADMIN_PORT: $AZTEC_ADMIN_PORT
     entrypoint: >
-      sh -c 'node --no-warnings /usr/src/yarn-project/aztec/dest/bin/index.js start --network alpha-testnet --node --archiver --sequencer'
+      sh -c 'node --no-warnings /usr/src/yarn-project/aztec/dest/bin/index.js start --network $NETWORK --node --archiver --sequencer'
     ports:
       - $AZTEC_PORT:$AZTEC_PORT
       - $AZTEC_ADMIN_PORT:$AZTEC_ADMIN_PORT
@@ -24,7 +24,7 @@ services:
       - $KEY_STORE_DIRECTORY:/var/lib/keystore
     restart: always
     networks:
-      - dncore_network   # Attach to your existing network
+      - $DOCKER-NETWORK   # Attach to your existing network
 
   aztec-collector:
     image: jer117/aztec-collector:sha-5930307
@@ -44,7 +44,7 @@ services:
     depends_on:
       - node
     networks:
-      - dncore_network
+      - $DOCKER-NETWORK
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:13285/health"]
       interval: 30s
@@ -53,5 +53,5 @@ services:
       start_period: 10s
 
 networks:
-  dncore_network:
+  $DOCKER-NETWORK:
     external: true       # Reuse the pre-existing network created by DAppNode
