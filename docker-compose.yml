@@ -1,7 +1,7 @@
 name: aztec-node
 services:
   node:
-    image: aztecprotocol/aztec:2.1.7
+    image: aztecprotocol/aztec:2.1.8
     environment:
       KEY_STORE_DIRECTORY: /var/lib/keystore
       DATA_DIRECTORY: /var/lib/data
@@ -39,8 +39,8 @@ services:
       - AZTEC_COLLECTOR_API_LISTEN=0.0.0.0:13285
       - AZTEC_COLLECTOR_JSONLOG_PATH=/data/aztec-collector.json
     volumes:
-      - /home/dappnode/ansible-aztec/config.yaml:/app/config.yaml:ro
-      - /home/dappnode/ansible-aztec/collector-data:/data
+      - ${CONFIG_FILE}:/app/config.yaml:ro
+      - ${COLLECTOR_DATA_DIRECTORY}:/data
     depends_on:
       - node
     networks:
