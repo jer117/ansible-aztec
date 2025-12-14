@@ -52,6 +52,9 @@ services:
       retries: 3
       start_period: 10s
 
-networks:
-  $DOCKER-NETWORK:
-    external: true       # Reuse the pre-existing network created by DAppNode
+# Only define external network if DOCKER_NETWORK is set
+# If not set or empty, comment out this section and remove network references from services above
+# networks:
+#   ${DOCKER_NETWORK}:
+#     external: ${DOCKER_NETWORK:+true}
+#     name: ${DOCKER_NETWORK}
