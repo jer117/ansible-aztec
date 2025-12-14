@@ -23,8 +23,9 @@ services:
       - $DATA_DIRECTORY:/var/lib/data
       - $KEY_STORE_DIRECTORY:/var/lib/keystore
     restart: always
-    networks:
-      - $DOCKER-NETWORK   # Attach to your existing network
+    # Add this if you have a external network
+    # networks:
+    #   - $DOCKER_NETWORK
 
   aztec-collector:
     image: jer117/aztec-collector:sha-5930307
@@ -43,8 +44,9 @@ services:
       - ${COLLECTOR_DATA_DIRECTORY}:/data
     depends_on:
       - node
-    networks:
-      - $DOCKER-NETWORK
+    # Add this if you have a external network
+    # networks:
+    #   - $DOCKER_NETWORK
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:13285/health"]
       interval: 30s
