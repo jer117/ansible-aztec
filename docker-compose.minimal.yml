@@ -2,7 +2,7 @@ name: aztec-node-minimal
 
 services:
   node:
-    image: aztecprotocol/aztec:2.1.8-arm64
+    image: aztecprotocol/aztec:2.1.9-arm64
     environment:
       KEY_STORE_DIRECTORY: /var/lib/keystore
       DATA_DIRECTORY: /var/lib/data

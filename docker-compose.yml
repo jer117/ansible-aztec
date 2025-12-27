@@ -1,7 +1,7 @@
 name: aztec-node
 services:
   node:
-    image: aztecprotocol/aztec:2.1.8
+    image: aztecprotocol/aztec:2.1.9
     environment:
       KEY_STORE_DIRECTORY: /var/lib/keystore
       DATA_DIRECTORY: /var/lib/data
